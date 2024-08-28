@@ -1,15 +1,42 @@
 <?php
-include 'db.php';
+session_start();
+
+// Database configuration
+$host = 'camerastore.mysql.database.azure.com';
+$port = 3306;
+$username = 'camerastore';
+$password = 'ognam@#123';
+$dbname = 'Camera_Warehouse';
+
+// Path to your SSL certificate
+$ssl_ca = '/home/site/wwwroot/ca-cert.pem'; // Ensure this path is correct
+
+// Create connection with SSL
+$conn = new mysqli();
+$conn->ssl_set(null, null, $ssl_ca, null, null);
+$conn->real_connect($host, $username, $password, $dbname, $port, null, MYSQLI_CLIENT_SSL);
+
+// Check connection
+if ($conn->connect_error) {
+    echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
+    exit();
+}
 
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method == 'POST') {
-    handlePost($pdo);
+    handlePost($conn);
 } else {
     echo '<script>alert("Invalid request method");</script>';
 }
 
-function handlePost($pdo) {
+function handlePost($conn) {
+    // Ensure POST data is received
+    if (!isset($_POST['reg-password'], $_POST['conf_reg-password'], $_POST['reg-username'], $_POST['PhoneNum'], $_POST['role'])) {
+        echo '<script>alert("Required fields are missing");</script>';
+        return;
+    }
+
     if ($_POST['reg-password'] !== $_POST['conf_reg-password']) {
         echo '<script>alert("Passwords do not match");</script>';
         return;
@@ -20,22 +47,27 @@ function handlePost($pdo) {
     $phoneNumber = htmlspecialchars($_POST['PhoneNum']);
     $role = htmlspecialchars($_POST['role']);
 
-    $sql = "INSERT INTO users (Username, PasswordHash, PhoneNumber, Role, CreatedAt) VALUES (:username, :passwordHash, :phoneNumber, :role, NOW())";
-    $stmt = $pdo->prepare($sql);
+    // Prepare SQL statement
+    $stmt = $conn->prepare("INSERT INTO users (Username, PasswordHash, PhoneNumber, Role, CreatedAt) VALUES (?, ?, ?, ?, NOW())");
 
-    try {
-        $stmt->execute([
-            'username' => $username,
-            'passwordHash' => $passwordHash,
-            'phoneNumber' => $phoneNumber,
-            'role' => $role
-        ]);
+    if ($stmt === false) {
+        echo '<script>alert("Failed to prepare SQL statement");</script>';
+        return;
+    }
+
+    // Bind parameters and execute the statement
+    $stmt->bind_param('ssss', $username, $passwordHash, $phoneNumber, $role);
+
+    if ($stmt->execute()) {
         echo '<script>
                 alert("User created successfully");
                 window.location.href = "index.html";
               </script>';
-    } catch (PDOException $e) {
-        echo '<script>alert("Error: ' . $e->getMessage() . '");</script>';
+    } else {
+        echo '<script>alert("Error: ' . $stmt->error . '");</script>';
     }
+
+    // Close the statement
+    $stmt->close();
 }
 ?>
