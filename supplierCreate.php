@@ -12,7 +12,25 @@ $username = $_SESSION['username'];
 $role = $_SESSION['role'];
 
 // Include config file
-require_once "config.php";
+define('DB_SERVER', 'camerastore.mysql.database.azure.com');
+define('DB_PORT', 3306);
+define('DB_USERNAME', 'camerastore');
+define('DB_PASSWORD', 'ognam@#123');
+define('DB_NAME', 'Camera_Warehouse');
+
+// Path to your SSL certificate
+$ssl_ca = '/home/site/wwwroot/certs/ca-cert.pem'; // Ensure this path is correct
+
+// Create connection with SSL
+$mysqli = new mysqli();
+$mysqli->ssl_set(null, null, $ssl_ca, null, null);
+$mysqli->real_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME, DB_PORT, null, MYSQLI_CLIENT_SSL);
+
+// Check connection
+if ($mysqli->connect_error) {
+    echo json_encode(['status' => 'error', 'message' => 'Database connection failed: ' . $mysqli->connect_error]);
+    exit();
+}
  
 // Define variables and initialize with empty values
 $name = $location = $email = "";
