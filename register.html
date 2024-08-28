@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Register</title>
+ 
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="login.css"> 
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="validateForm.js"></script>
+    
+    <style>
+        label{
+            font-size: 15px;
+            margin-top: 5px;
+            padding: 5px;
+        }
+
+        .form-control{
+            margin-top: -5px;
+        }
+
+        .radio-inline input{
+            margin-left: 20px;
+        }
+
+        .radio-inline{
+            margin-top: 10px;
+            
+        }
+
+        button{
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <form action="register.php" method="POST" id="registrationForm">
+        <h3>Register</h3>
+    
+        <label for="reg-username">Username</label>
+        <input type="text" class="form-control" placeholder="Username" id="reg-username" name="reg-username" required>
+    
+        <div class="radio-inline">
+            <label for="role">Role
+                <input type="radio" id="admin" name="role" value="Admin" required> Admin
+            </label>
+            <label for="role">
+                <input type="radio" id="worker" name="role" value="Worker" required> Worker
+            </label>
+        </div>
+    
+        <label for="PhoneNum">Phone Number</label>
+        <input type="text" class="form-control" placeholder="Phone Number" id="PhoneNum" name="PhoneNum" required>
+    
+        <label for="reg-password">Password</label>
+        <input type="password" class="form-control" placeholder="Password" id="reg-password" name="reg-password" required>
+    
+        <label for="conf_reg-password">Confirm Password</label>
+        <input type="password" class="form-control" placeholder="Confirm Password" id="conf_reg-password" name="conf_reg-password" required>
+    
+        <button type="submit">Register</button>
+        <p class="display-6 text-center">Already have an account? <a href="index.html">Login</a></p>      
+    </form>
+    
+    
+</body>
+</html>
+
