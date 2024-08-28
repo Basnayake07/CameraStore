@@ -37,46 +37,41 @@ $name = $location = $email = "";
 $name_err = $location_err = $email_err = "";
  
 // Processing form data when form is submitted
-if($_SERVER["REQUEST_METHOD"] == "POST"){
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate name
     $input_name = trim($_POST["name"]);
-    if(empty($input_name)){
+    if (empty($input_name)) {
         $name_err = "Please enter a name.";
-    } elseif(!filter_var($input_name, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
+    } elseif (!preg_match("/^[a-zA-Z\s]+$/", $input_name)) {
         $name_err = "Please enter a valid name.";
-    } else{
+    } else {
         $name = $input_name;
     }
 
     // Validate location
     $input_location = trim($_POST["location"]);
-    if(empty($input_location)){
-        $location_err = "Please enter an address.";     
-    } else{
+    if (empty($input_location)) {
+        $location_err = "Please enter an address.";
+    } else {
         $location = $input_location;
     }
     
-   // Validate email
+    // Validate email
     $input_email = trim($_POST["email"]);
     if (empty($input_email)) {
-        $email_err = "Fill the email address!<br />";
-    } else {
-    // Check if email contains any uppercase letters
-        if (preg_match('/[A-Z]/', $input_email)) {
-        $email_err = "This email address must contain only lowercase letters.";
-        } elseif (!filter_var($input_email, FILTER_VALIDATE_EMAIL)) {
+        $email_err = "Fill the email address!";
+    } elseif (!filter_var($input_email, FILTER_VALIDATE_EMAIL)) {
         $email_err = "This email address is invalid.";
-        } else {
+    } else {
         $email = $input_email;
-        }
     }
     
     // Check input errors before inserting in database
-    if(empty($name_err) && empty($location_err) && empty($email_err)){
+    if (empty($name_err) && empty($location_err) && empty($email_err)) {
         // Prepare an insert statement
-        $sql = "INSERT INTO suppliers (suppliername, location, contactemail) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO Suppliers (SupplierName, Location, ContactEmail) VALUES (?, ?, ?)";
  
-        if($stmt = $mysqli->prepare($sql)){
+        if ($stmt = $mysqli->prepare($sql)) {
             // Bind variables to the prepared statement as parameters
             $stmt->bind_param("sss", $param_name, $param_location, $param_email);
             
@@ -86,11 +81,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $param_email = $email;
             
             // Attempt to execute the prepared statement
-            if($stmt->execute()){
+            if ($stmt->execute()) {
                 // Records created successfully. Redirect to landing page
-                header("location: suppliers.php");
+                header("Location: suppliers.php");
                 exit();
-            } else{
+            } else {
                 echo "Oops! Something went wrong. Please try again later.";
             }
         }
@@ -116,12 +111,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="style.css">
 
     <style>
-        .wrapper{
+        .wrapper {
             width: 800px;
             margin: 0 auto;
         }
-
-        .form-group{
+        .form-group {
             padding: 10px;
         }
     </style>
@@ -143,7 +137,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     </div>
                     <!-- Sidebar navigation links -->
                     <ul class="nav flex-column">
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link active" href="dashboard.php"><i class="material-icons">home</i>Dashboard</a>
                         </li>
                         <li class="nav-item">
@@ -153,10 +147,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             <a class="nav-link" href="productGet.php"><i class="material-icons">category</i>Products</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="purchaseView.php"><i class="material-icons">shopping_cart</i>Purchase Orders</a>                            
+                            <a class="nav-link" href="purchaseView.php"><i class="material-icons">shopping_cart</i>Purchase Orders</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="dispatchedOrders.php"><i class="material-icons">sell</i>Dispatch Orders</a>                            
+                            <a class="nav-link" href="dispatchedOrders.php"><i class="material-icons">sell</i>Dispatch Orders</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="suppliers.php"><i class="material-icons">local_shipping</i>Suppliers</a>
@@ -165,7 +159,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             <a class="nav-link" href="shopIndex.php"><i class="material-icons md-18">store</i>Shops</a>
                         </li>
                     </ul>
-                    
                 </div>
             </nav>
 
@@ -185,36 +178,36 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         </span>                        
                     </div>
                 </div>
-            <!-- Main content can be added here -->
-            <div class="wrapper">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h2 class="mt-5">Create Record</h2>
-                            
-                            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                                <div class="form-group">
-                                    <label>Name</label>
-                                    <input type="text" name="name" class="form-control <?php echo (!empty($name_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $name; ?>">
-                                    <span class="invalid-feedback"><?php echo $name_err;?></span>
-                                </div>
-                                <div class="form-group">
-                                    <label>location</label>
-                                    <textarea name="location" class="form-control <?php echo (!empty($location_err)) ? 'is-invalid' : ''; ?>"><?php echo $location; ?></textarea>
-                                    <span class="invalid-feedback"><?php echo $location_err;?></span>
-                                </div>
-                                <div class="form-group">
-                                    <label>Supplier's Email</label>
-                                    <input type="text" name="email" class="form-control <?php echo (!empty($email_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $email; ?>">
-                                    <span class="invalid-feedback"><?php echo $email_err;?></span>
-                                </div><br>
-                                <input type="submit" class="btn btn-primary" value="Submit">
-                                <a href="suppliers.php" class="btn btn-secondary ml-2">Cancel</a>
-                            </form>
+                
+                <!-- Main content -->
+                <div class="wrapper">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2 class="mt-5">Create Record</h2>
+                                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" id="name" name="name" class="form-control <?php echo (!empty($name_err)) ? 'is-invalid' : ''; ?>" value="<?php echo htmlspecialchars($name); ?>">
+                                        <span class="invalid-feedback"><?php echo $name_err; ?></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="location">Location</label>
+                                        <textarea id="location" name="location" class="form-control <?php echo (!empty($location_err)) ? 'is-invalid' : ''; ?>"><?php echo htmlspecialchars($location); ?></textarea>
+                                        <span class="invalid-feedback"><?php echo $location_err; ?></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Supplier's Email</label>
+                                        <input type="text" id="email" name="email" class="form-control <?php echo (!empty($email_err)) ? 'is-invalid' : ''; ?>" value="<?php echo htmlspecialchars($email); ?>">
+                                        <span class="invalid-feedback"><?php echo $email_err; ?></span>
+                                    </div><br>
+                                    <input type="submit" class="btn btn-primary" value="Submit">
+                                    <a href="suppliers.php" class="btn btn-secondary ml-2">Cancel</a>
+                                </form>
+                            </div>
                         </div>
-                    </div>        
+                    </div>
                 </div>
-            </div>               
                     
             </main>
         </div>
