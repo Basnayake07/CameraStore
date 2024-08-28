@@ -103,11 +103,11 @@ $role = $_SESSION['role'];
                                 <?php
                                 // Include config file
                                 // Database configuration constants
-                                    define('DB_SERVER', 'we-server.mysql.database.azure.com');
+                                    define('DB_SERVER', 'camerastore.mysql.database.azure.com');
                                     define('DB_PORT', 3306);
-                                    define('DB_USERNAME', 'creuugqssa');
-                                    define('DB_PASSWORD', 'ZfiK0QRaD6$b7eii');
-                                    define('DB_NAME', 'web');
+                                    define('DB_USERNAME', 'camerastore');
+                                    define('DB_PASSWORD', 'ognam@#123');
+                                    define('DB_NAME', 'Camera_Warehouse');
                                     
                                     // Path to your SSL certificate
                                     $ssl_ca = '/home/site/wwwroot/certs/ca-cert.pem'; // Ensure this path is correct
