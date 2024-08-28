@@ -29,7 +29,7 @@ if (isset($_POST['submit'])) {
     $stmt = $mysqli->prepare("INSERT INTO products (ProductName, Brand, Type, SKU) VALUES (?, ?, ?, ?)");
     
     if ($stmt) {
-        $stmt->bind_param("ssssss", $productName, $brand, $type, $sku, $dateAdded, $status);
+        $stmt->bind_param("ssssss", $productName, $brand, $type, $sku);
         
         if ($stmt->execute()) {
             header("Location: productGet.php?msg=New record created successfully");
