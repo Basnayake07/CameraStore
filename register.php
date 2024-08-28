@@ -1,40 +1,15 @@
-// Database configuration
-$host = 'camerastore.mysql.database.azure.com';
-$port = 3306;
-$username = 'camerastore';
-$password = 'ognam@#123';
-$dbname = 'Camera_Warehouse';
-
-// Path to your SSL certificate
-$ssl_ca = '/home/site/wwwroot/ca-cert.pem'; // Ensure this path is correct
-
-// Create connection with SSL
-$mysqli = new mysqli($host, $username, $password, $dbname, $port);
-
-// Set SSL parameters
-$mysqli->ssl_set(null, null, $ssl_ca, null, null);
-
-// Real connect with SSL
-if (!$mysqli->real_connect($host, $username, $password, $dbname, $port, null, MYSQLI_CLIENT_SSL)) {
-    echo json_encode(['status' => 'error', 'message' => 'Database connection failed: ' . $mysqli->connect_error]);
-    exit();
-}
-
-// Check connection
-if ($mysqli->connect_error) {
-    echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
-    exit();
-}
+<?php
+include 'db.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method == 'POST') {
-    handlePost($mysqli);
+    handlePost($pdo);
 } else {
     echo '<script>alert("Invalid request method");</script>';
 }
 
-function handlePost($mysqli) {
+function handlePost($pdo) {
     if ($_POST['reg-password'] !== $_POST['conf_reg-password']) {
         echo '<script>alert("Passwords do not match");</script>';
         return;
@@ -45,27 +20,22 @@ function handlePost($mysqli) {
     $phoneNumber = htmlspecialchars($_POST['PhoneNum']);
     $role = htmlspecialchars($_POST['role']);
 
-    $sql = "INSERT INTO users (Username, PasswordHash, PhoneNumber, Role, CreatedAt) VALUES (?, ?, ?, ?, NOW())";
-    $stmt = $mysqli->prepare($sql);
-
-    if ($stmt === false) {
-        echo '<script>alert("Error preparing statement: ' . $mysqli->error . '");</script>';
-        return;
-    }
-
-    $stmt->bind_param("ssss", $username, $passwordHash, $phoneNumber, $role);
+    $sql = "INSERT INTO users (Username, PasswordHash, PhoneNumber, Role, CreatedAt) VALUES (:username, :passwordHash, :phoneNumber, :role, NOW())";
+    $stmt = $pdo->prepare($sql);
 
     try {
-        $stmt->execute();
+        $stmt->execute([
+            'username' => $username,
+            'passwordHash' => $passwordHash,
+            'phoneNumber' => $phoneNumber,
+            'role' => $role
+        ]);
         echo '<script>
                 alert("User created successfully");
                 window.location.href = "index.html";
               </script>';
-    } catch (Exception $e) {
+    } catch (PDOException $e) {
         echo '<script>alert("Error: ' . $e->getMessage() . '");</script>';
-    } finally {
-        $stmt->close(); // Close statement
     }
 }
-
-$mysqli->close(); // Close the database connection
+?>
