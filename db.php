@@ -7,7 +7,7 @@ $password = 'ognam@#123';
 $dbname = 'Camera_Warehouse';
 
 // Path to your SSL certificate
-$ssl_ca = '/home/site/wwwroot/ca-cert.pem'; // Ensure this path is correct
+$ssl_ca = 'site/wwwroot/ca-cert.pem'; // Ensure this path is correct
 
 // Create connection with SSL
 $mysqli = new mysqli($host, $username, $password, $dbname, $port);
