@@ -10,18 +10,18 @@ $dbname = 'Camera_Warehouse';
 $ssl_ca = '/home/site/wwwroot/ca-cert.pem'; // Ensure this path is correct
 
 // Create connection with SSL
-$conn = new mysqli($host, $username, $password, $dbname, $port, MYSQLI_CLIENT_SSL);
-$conn->ssl_set(null, null, $ssl_ca, null, null);
+$mysqli = new mysqli($host, $username, $password, $dbname, $port, MYSQLI_CLIENT_SSL);
+$mysqli->ssl_set(null, null, $ssl_ca, null, null);
 
 // Check connection
-if ($conn->connect_error) {
+if ($mysqli->connect_error) {
     echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
     exit();
 }
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method == 'POST') {
-    handlePost($conn);
+    handlePost($mysqli);
 } else {
     echo '<script>alert("Invalid request method");</script>';
 }
@@ -38,7 +38,7 @@ function handlePost($conn) {
     $role = htmlspecialchars($_POST['role']);
 
     $sql = "INSERT INTO users (Username, PasswordHash, PhoneNumber, Role, CreatedAt) VALUES (?, ?, ?, ?, NOW())";
-    $stmt = $conn->prepare($sql);
+    $stmt = $mysqli->prepare($sql);
 
     if ($stmt === false) {
         echo '<script>alert("Error preparing statement");</script>';
