@@ -61,4 +61,7 @@ function handlePost($mysqli) {
                 window.location.href = "index.html";
               </script>';
     } catch (Exception $e) {
-        echo '<
+        echo '<script>alert("Error: ' . $e->getMessage() . '");</script>';
+    }
+}
+?>
