@@ -102,7 +102,26 @@ $role = $_SESSION['role'];
             
                                 <?php
                                 // Include config file
-                                require_once "config.php";
+                                // Database configuration constants
+                                    define('DB_SERVER', 'we-server.mysql.database.azure.com');
+                                    define('DB_PORT', 3306);
+                                    define('DB_USERNAME', 'creuugqssa');
+                                    define('DB_PASSWORD', 'ZfiK0QRaD6$b7eii');
+                                    define('DB_NAME', 'web');
+                                    
+                                    // Path to your SSL certificate
+                                    $ssl_ca = '/home/site/wwwroot/certs/ca-cert.pem'; // Ensure this path is correct
+                                    
+                                    // Create connection with SSL
+                                    $mysqli = new mysqli();
+                                    $mysqli->ssl_set(null, null, $ssl_ca, null, null);
+                                    $mysqli->real_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME, DB_PORT, null, MYSQLI_CLIENT_SSL);
+                                    
+                                    // Check connection
+                                    if ($mysqli->connect_error) {
+                                        echo json_encode(['status' => 'error', 'message' => 'Database connection failed: ' . $mysqli->connect_error]);
+                                        exit();
+                                    }
                                 // Initialize search variable
                                 $search = isset($_GET['search']) ? $mysqli->real_escape_string($_GET['search']) : '';
                             
