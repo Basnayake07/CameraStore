@@ -10,7 +10,7 @@ $dbname = 'Camera_Warehouse';
 $ssl_ca = 'site/wwwroot/ca-cert.pem'; // Ensure this path is correct
 
 // Create connection with SSL
-$mysqli = new mysqli($host, $username, $password, $dbname, $port);
+$mysqli = new mysqli($host, $username, $password, $dbname, $port,null, MYSQLI_CLIENT_SSL);
 
 // Set SSL parameters
 $mysqli->ssl_set(null, null, $ssl_ca, null, null);
