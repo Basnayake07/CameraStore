@@ -4,7 +4,7 @@ $host = 'camerastore.mysql.database.azure.com';
 $port = 3306;
 $username = 'camerastore';
 $password = 'ognam@#123';
-$dbname = 'camerastore';
+$dbname = 'Camera_Warehouse';
 
 // Path to your SSL certificate
 $ssl_ca = '/home/site/wwwroot/ca-cert.pem'; // Ensure this path is correct
