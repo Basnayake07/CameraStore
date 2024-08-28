@@ -21,12 +21,14 @@ if ($mysqli->connect_error) {
 }
 
 if (isset($_POST['submit'])) {
-    $productName = $_POST['productname'];
-    $brand = $_POST['brand'];
-    $type = $_POST['type'];
-    $sku = $_POST['sku'];
-    $dateAdded = $_POST['dateadded'];
+    // Sanitize and validate user inputs
+    $productName = filter_var($_POST['productname'], FILTER_SANITIZE_STRING);
+    $brand = filter_var($_POST['brand'], FILTER_SANITIZE_STRING);
+    $type = filter_var($_POST['type'], FILTER_SANITIZE_STRING);
+    $sku = filter_var($_POST['sku'], FILTER_SANITIZE_STRING);
+    $dateAdded = filter_var($_POST['dateadded'], FILTER_SANITIZE_STRING);
 
+    // Prepare SQL statement
     $stmt = $mysqli->prepare("INSERT INTO products (ProductName, Brand, Type, SKU, DateAdded) VALUES (?, ?, ?, ?, ?)");
     
     if ($stmt) {
@@ -41,7 +43,7 @@ if (isset($_POST['submit'])) {
 
         $stmt->close();
     } else {
-        echo "Failed to prepare the SQL statement: " . $conn->error;
+        echo "Failed to prepare the SQL statement: " . $mysqli->error;
     }
 }
 
