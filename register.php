@@ -10,14 +10,21 @@ $dbname = 'Camera_Warehouse';
 $ssl_ca = '/home/site/wwwroot/ca-cert.pem'; // Ensure this path is correct
 
 // Create connection with SSL
-$mysqli = new mysqli($host, $username, $password, $dbname, $port, MYSQLI_CLIENT_SSL);
+$mysqli = new mysqli($host, $username, $password, $dbname, $port);
 $mysqli->ssl_set(null, null, $ssl_ca, null, null);
+
+// Real connect with SSL
+if (!$mysqli->real_connect($host, $username, $password, $dbname, $port, null, MYSQLI_CLIENT_SSL)) {
+    echo json_encode(['status' => 'error', 'message' => 'Database connection failed: ' . $mysqli->connect_error]);
+    exit();
+}
 
 // Check connection
 if ($mysqli->connect_error) {
     echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
     exit();
 }
+
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method == 'POST') {
@@ -26,7 +33,7 @@ if ($method == 'POST') {
     echo '<script>alert("Invalid request method");</script>';
 }
 
-function handlePost($conn) {
+function handlePost($mysqli) {
     if ($_POST['reg-password'] !== $_POST['conf_reg-password']) {
         echo '<script>alert("Passwords do not match");</script>';
         return;
@@ -41,7 +48,7 @@ function handlePost($conn) {
     $stmt = $mysqli->prepare($sql);
 
     if ($stmt === false) {
-        echo '<script>alert("Error preparing statement");</script>';
+        echo '<script>alert("Error preparing statement: ' . $mysqli->error . '");</script>';
         return;
     }
 
@@ -54,7 +61,4 @@ function handlePost($conn) {
                 window.location.href = "index.html";
               </script>';
     } catch (Exception $e) {
-        echo '<script>alert("Error: ' . $e->getMessage() . '");</script>';
-    }
-}
-?>
+        echo '<
