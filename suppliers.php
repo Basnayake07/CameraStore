@@ -113,12 +113,12 @@ $role = $_SESSION['role'];
                                 $ssl_ca = '/home/site/wwwroot/ca-cert.pem'; // Ensure this path is correct
                                 
                                 // Create connection with SSL
-                                $conn = new mysqli();
-                                $conn->ssl_set(null, null, $ssl_ca, null, null);
-                                $conn->real_connect($host, $username, $password, $dbname, $port, null, MYSQLI_CLIENT_SSL);
+                                $mysqli = new mysqli();
+                                $mysqli->ssl_set(null, null, $ssl_ca, null, null);
+                                $mysqli->real_connect($host, $username, $password, $dbname, $port, null, MYSQLI_CLIENT_SSL);
                                 
                                 // Check connection
-                                if ($conn->connect_error) {
+                                if ($mysqli->connect_error) {
                                     echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
                                     exit();
                                 }
