@@ -21,12 +21,18 @@ if ($mysqli->connect_error) {
 }
 
 if (isset($_POST['submit'])) {
-    // Sanitize and validate user inputs
-    $productName = filter_var($_POST['productname'], FILTER_SANITIZE_STRING);
-    $brand = filter_var($_POST['brand'], FILTER_SANITIZE_STRING);
-    $type = filter_var($_POST['type'], FILTER_SANITIZE_STRING);
-    $sku = filter_var($_POST['sku'], FILTER_SANITIZE_STRING);
-    $dateAdded = filter_var($_POST['dateadded'], FILTER_SANITIZE_STRING);
+    $productName = htmlspecialchars($_POST['productname']);
+    $brand = htmlspecialchars($_POST['brand']);
+    $type = htmlspecialchars($_POST['type']);
+    $sku = htmlspecialchars($_POST['sku']);
+    $dateAdded = isset($_POST['dateadded']) ? htmlspecialchars($_POST['dateadded']) : '';
+
+    // Validate the datetime format (YYYY-MM-DD) - adjust according to your needs
+    $datePattern = '/^\d{4}-\d{2}-\d{2}$/';
+    if (!preg_match($datePattern, $dateAdded)) {
+        echo "Invalid date format. Please use YYYY-MM-DD.";
+        exit();
+    }
 
     // Prepare SQL statement
     $stmt = $mysqli->prepare("INSERT INTO products (ProductName, Brand, Type, SKU, DateAdded) VALUES (?, ?, ?, ?, ?)");
