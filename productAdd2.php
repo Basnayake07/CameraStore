@@ -115,7 +115,14 @@ $role = $_SESSION['role'];
                                     <label class="form-label">SKU:</label>
                                     <input type="text" class="form-control" id="sku" name="sku">
                                     <small id="skuError" class="text-danger"></small>
-                                </div>            
+                                </div> 
+
+                                 <div class="col mb-3">
+                                    <label class="form-label">Date Added:</label>
+                                    <input type="date" class="form-control" id="dateadded" name="dateadded">
+                                    <small id="dateAddedError" class="text-danger"></small>
+                                </div>
+   
                                                                
                                 <div>
                                     <button type="submit" class="btn btn-success" name="submit">Save</button>
