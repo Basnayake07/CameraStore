@@ -25,8 +25,8 @@ if (isset($_POST['submit'])) {
     $brand = $_POST['brand'];
     $type = $_POST['type'];
     $sku = $_POST['sku'];
-    $dateAdded = '2024-08-29';
-    $status = 'active'; // Default status value
+    $dateAdded = $_POST['dateadded'];
+    $status = 'continue'; // Default status value
 
     // Include status in the SQL statement
     $stmt = $mysqli->prepare("INSERT INTO products (ProductName, Brand, Type, SKU, DateAdded, status) VALUES (?, ?, ?, ?, ?, ?)");
