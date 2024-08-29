@@ -8,7 +8,26 @@ if (!isset($_SESSION['username'])) {
 }
 
 // Database connection
-require_once "Config.php";
+$host = 'camerastore.mysql.database.azure.com';
+$port = 3306;
+$username = 'camerastore';
+$password = 'ognam@#123';
+$dbname = 'Camera_Warehouse';
+
+// Path to your SSL certificate
+$ssl_ca = '/home/site/wwwroot/ca-cert.pem'; // Ensure this path is correct
+
+// Create connection with SSL
+$mysqli = new mysqli();
+$mysqli->ssl_set(null, null, $ssl_ca, null, null);
+$mysqli->real_connect($host, $username, $password, $dbname, $port, null, MYSQLI_CLIENT_SSL);
+
+// Check connection
+if ($mysqli->connect_error) {
+    echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
+    exit();
+}
+
 
 // Fetch data from Inventory
 $sql = "SELECT ps.PurchaseOrderID, p.ProductName,s.SupplierName, ps.QuantityOrdered, ps.QuantityRecieved, ps.UnitPrice, ps.OrderDate  FROM products p, purchaseorders ps, suppliers s WHERE ps.ProductID = p.ProductID AND ps.SupplierID = s.SupplierID ORDER BY ps.PurchaseOrderID ;";
