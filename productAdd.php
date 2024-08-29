@@ -29,7 +29,7 @@ if (isset($_POST['submit'])) {
     $status = 'continue'; // Default status value
 
     // Include status in the SQL statement
-    $stmt = $mysqli->prepare("INSERT INTO products (ProductName, Brand, Type, SKU, 'DateAdded`=NOW(), status) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = $mysqli->prepare("INSERT INTO products (ProductName, Brand, Type, SKU, DateAdded=NOW(), status) VALUES (?, ?, ?, ?, ?, ?)");
     
     if ($stmt) {
         // Bind status parameter
