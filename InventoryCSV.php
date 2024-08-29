@@ -7,17 +7,25 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-// Database connection
-$servername = "localhost:3307";
-$username = "root";
-$password = "";
-$dbname = "camera_warehouse";
+$host = 'camerastore.mysql.database.azure.com';
+$port = 3306;
+$username = 'camerastore';
+$password = 'ognam@#123';
+$dbname = 'Camera_Warehouse';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Path to your SSL certificate
+$ssl_ca = '/home/site/wwwroot/ca-cert.pem'; // Ensure this path is correct
 
+// Create connection with SSL
+$conn = new mysqli();
+$conn->ssl_set(null, null, $ssl_ca, null, null);
+$conn->real_connect($host, $username, $password, $dbname, $port, null, MYSQLI_CLIENT_SSL);
+
+// Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+    echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
+    exit();
+}}
 
 // Fetch data from Inventory
 $sql = "SELECT * FROM Inventory";
