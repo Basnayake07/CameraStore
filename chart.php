@@ -16,7 +16,7 @@ $conn->real_connect($host, $username, $password, $dbname, $port, null, MYSQLI_CL
 
 // Check connection
 if ($conn->connect_error) {
-    echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
+    echo json_encode(['status' => 'error', 'message' => 'Database connection failed: ' . $conn->connect_error]);
     exit();
 }
 
@@ -26,16 +26,19 @@ $sql = "SELECT p.ProductName, SUM(d.Quantity) as TotalDispatched
         JOIN Products p ON d.ProductID = p.ProductID
         WHERE MONTH(d.OrderDate) = MONTH(CURRENT_DATE()) AND YEAR(d.OrderDate) = YEAR(CURRENT_DATE())
         GROUP BY p.ProductName";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
 
-$dispatchData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$result = $conn->query($sql);
+
+if (!$result) {
+    echo json_encode(['status' => 'error', 'message' => 'Query failed: ' . $conn->error]);
+    exit();
+}
 
 $productNames = [];
 $quantities = [];
 
 // Prepare data for Chart
-foreach ($dispatchData as $row) {
+while ($row = $result->fetch_assoc()) {
     $productNames[] = $row['ProductName'];
     $quantities[] = $row['TotalDispatched'];
 }
@@ -46,4 +49,6 @@ echo json_encode([
     'yValues' => $quantities
 ]);
 
+// Close the connection
+$conn->close();
 ?>
