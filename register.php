@@ -47,19 +47,6 @@ function handlePost($conn) {
     $phoneNumber = htmlspecialchars($_POST['PhoneNum']);
     $role = htmlspecialchars($_POST['role']);
 
-    // Check if the username already exists
-    $checkStmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE Username = ?");
-    $checkStmt->bind_param('s', $username);
-    $checkStmt->execute();
-    $checkStmt->bind_result($userCount);
-    $checkStmt->fetch();
-    $checkStmt->close();
-
-    if ($userCount > 0) {
-        echo '<script>alert("Username already exists. Please choose a different username.");</script>';
-        return;
-    }
-
     // Prepare SQL statement
     $stmt = $conn->prepare("INSERT INTO users (Username, PasswordHash, PhoneNumber, Role, CreatedAt) VALUES (?, ?, ?, ?, NOW())");
 
