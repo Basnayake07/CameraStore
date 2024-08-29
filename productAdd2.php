@@ -117,11 +117,11 @@ $role = $_SESSION['role'];
                                     <small id="skuError" class="text-danger"></small>
                                 </div> 
 
-                                 <div class="col mb-3">
+<!--                                  <div class="col mb-3">
                                     <label class="form-label">Date Added:</label>
                                     <input type="date" class="form-control" id="dateadded" name="dateadded">
                                     <small id="dateAddedError" class="text-danger"></small>
-                                </div>
+                                </div> -->
    
                                                                
                                 <div>
