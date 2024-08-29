@@ -1,7 +1,25 @@
 <?php
 
 // Include config file
-require_once "config.php";
+$host = 'camerastore.mysql.database.azure.com';
+$port = 3306;
+$username = 'camerastore';
+$password = 'ognam@#123';
+$dbname = 'Camera_Warehouse';
+
+// Path to your SSL certificate
+$ssl_ca = '/home/site/wwwroot/ca-cert.pem'; // Ensure this path is correct
+
+// Create connection with SSL
+$mysqli = new mysqli();
+$mysqli->ssl_set(null, null, $ssl_ca, null, null);
+$mysqli->real_connect($host, $username, $password, $dbname, $port, null, MYSQLI_CLIENT_SSL);
+
+// Check connection
+if ($mysqli->connect_error) {
+    echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
+    exit();
+}
 
 $supplierid = $unitprice = $productid = $qtyorder = $suppliername = $productname = "";
 $supplierid_err = $unitprice_err = $productname_err = $qtyorder_err = $suppliername_err = $productid_err = "";
