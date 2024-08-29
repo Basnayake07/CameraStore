@@ -28,6 +28,21 @@ $(document).ready(function () {
             isValid = false;
         }
 
+        if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+            alert("Password must include at least one special character.");
+            isValid = false;
+        }
+
+        if (!/[A-Za-z]/.test(password)) {
+            alert("Password must include at least one letter.");
+            isValid = false;
+        }
+
+        if (!/[0-9]/.test(password)) {
+            alert("Password must include at least one number.");
+            isValid = false;
+        }
+
         // Prevent form submission if there are validation errors
         if (!isValid) {
             event.preventDefault();
