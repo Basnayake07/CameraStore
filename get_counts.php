@@ -15,31 +15,34 @@ $mysqli->real_connect($host, $username, $password, $dbname, $port, null, MYSQLI_
 
 // Check connection
 if ($mysqli->connect_error) {
-    echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
+    echo json_encode(['status' => 'error', 'message' => 'Database connection failed: ' . $mysqli->connect_error]);
     exit();
 }
 
-
 try {
     // Query to count the number of categories
-    $stmt = $pdo->query("SELECT COUNT(*) as count FROM products");
-    $categoriesCount = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+    $result = $mysqli->query("SELECT COUNT(*) as count FROM products");
+    $categoriesCount = $result->fetch_assoc()['count'];
 
     // Query to count the number of suppliers
-    $stmt = $pdo->query("SELECT COUNT(*) as count FROM suppliers");
-    $suppliersCount = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+    $result = $mysqli->query("SELECT COUNT(*) as count FROM suppliers");
+    $suppliersCount = $result->fetch_assoc()['count'];
 
-    $stmt = $pdo->query("SELECT SUM(TotalValue) AS count FROM Inventory");
-    $inventoryvaluesCount = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+    // Query to sum the total value from the inventory
+    $result = $mysqli->query("SELECT SUM(TotalValue) AS count FROM Inventory");
+    $inventoryvaluesCount = $result->fetch_assoc()['count'];
 
-    $stmt = $pdo->query("SELECT SUM(Quantity) AS count FROM `dispatchorders`");
-    $dispatchQuantityCount = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+    // Query to sum the quantity from dispatch orders
+    $result = $mysqli->query("SELECT SUM(Quantity) AS count FROM dispatchorders");
+    $dispatchQuantityCount = $result->fetch_assoc()['count'];
 
-    $stmt = $pdo->query("SELECT COUNT(*) as count FROM shop");
-    $storesCount = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+    // Query to count the number of shops
+    $result = $mysqli->query("SELECT COUNT(*) as count FROM shop");
+    $storesCount = $result->fetch_assoc()['count'];
 
-    $stmt = $pdo->query("SELECT COUNT(*) AS count FROM PurchaseOrders WHERE Status != 'Complete'");
-    $ordersNotReceivedCount = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+    // Query to count purchase orders that are not marked as 'Complete'
+    $result = $mysqli->query("SELECT COUNT(*) AS count FROM PurchaseOrders WHERE Status != 'Complete'");
+    $ordersNotReceivedCount = $result->fetch_assoc()['count'];
 
     // Return the counts as JSON
     echo json_encode([
@@ -50,7 +53,10 @@ try {
         'storescount' => $storesCount,
         'yetReceived' => $ordersNotReceivedCount
     ]);
-} catch (PDOException $e) {
+} catch (Exception $e) {
     echo json_encode(['error' => $e->getMessage()]);
 }
+
+// Close the connection
+$mysqli->close();
 ?>
