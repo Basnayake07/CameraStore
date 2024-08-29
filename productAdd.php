@@ -25,11 +25,11 @@ if (isset($_POST['submit'])) {
     $brand = $_POST['brand'];
     $type = $_POST['type'];
     $sku = $_POST['sku'];
-    $dateAdded = $_POST['dateadded'];
+    // $dateAdded = $_POST['dateadded'];
     $status = 'continue'; // Default status value
 
     // Include status in the SQL statement
-    $stmt = $mysqli->prepare("INSERT INTO products (ProductName, Brand, Type, SKU, DateAdded, status) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = $mysqli->prepare("INSERT INTO products (ProductName, Brand, Type, SKU, 'DateAdded`=NOW(), status) VALUES (?, ?, ?, ?, ?, ?)");
     
     if ($stmt) {
         // Bind status parameter
