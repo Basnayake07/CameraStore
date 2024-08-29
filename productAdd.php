@@ -26,11 +26,14 @@ if (isset($_POST['submit'])) {
     $type = $_POST['type'];
     $sku = $_POST['sku'];
     $dateAdded = '2024-08-29';
+    $status = 'active'; // Default status value
 
-    $stmt = $mysqli->prepare("INSERT INTO products (ProductName, Brand, Type, SKU, DateAdded) VALUES (?, ?, ?, ?, ?)");
+    // Include status in the SQL statement
+    $stmt = $mysqli->prepare("INSERT INTO products (ProductName, Brand, Type, SKU, DateAdded, status) VALUES (?, ?, ?, ?, ?, ?)");
     
     if ($stmt) {
-        $stmt->bind_param("sssss", $productName, $brand, $type, $sku, $dateAdded);
+        // Bind status parameter
+        $stmt->bind_param("ssssss", $productName, $brand, $type, $sku, $dateAdded, $status);
         
         if ($stmt->execute()) {
             header("Location: productGet.php?msg=New record created successfully");
@@ -41,7 +44,7 @@ if (isset($_POST['submit'])) {
 
         $stmt->close();
     } else {
-        echo "Failed to prepare the SQL statement: " . $conn->error;
+        echo "Failed to prepare the SQL statement: " . $mysqli->error;
     }
 }
 
