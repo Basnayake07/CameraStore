@@ -25,7 +25,7 @@ if (isset($_POST['submit'])) {
     $brand = $_POST['brand'];
     $type = $_POST['type'];
     $sku = $_POST['sku'];
-    $dateAdded = $_POST['dateadded'];
+    $dateAdded = '2024-08-29';
 
     $stmt = $mysqli->prepare("INSERT INTO products (ProductName, Brand, Type, SKU, DateAdded) VALUES (?, ?, ?, ?, ?)");
     
